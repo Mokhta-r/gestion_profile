@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Cours et Notes{% endblock %}
+{% block content %}
+<h2 class="mb-4">Liste des cours, professeurs, étudiants et notes</h2>
+{% for course in courses.values() %}
+    <div class="mb-4">
+        <h5>{{ course.course_name }} <span class="text-muted">(Professeur : {{ course.professor_name }})</span></h5>
+        {% if course.students %}
+            <table class="table table-bordered table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Étudiant</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for student in course.students %}
+                    <tr>
+                        <td>{{ student.student_name }}</td>
+                        <td>{{ student.grade if student.grade is not none else 'N/A' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="text-muted">Aucun étudiant inscrit</div>
+        {% endif %}
+    </div>
+{% endfor %}
+{% endblock %}

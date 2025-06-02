@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Mon Profil{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-lg mb-4">
+            <div class="card-header bg-secondary bg-gradient text-white d-flex align-items-center">
+                <i class="bi bi-person-circle fs-3 me-2"></i>
+                <h3 class="mb-0">Mon Profil</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="d-flex flex-column align-items-center mb-4">
+                        {% if user.photo %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ user.photo) }}" alt="Photo de profil" width="120" class=" border mb-2">
+                        {% else %}
+                            <i class="bi bi-person-circle text-secondary" style="font-size: 5rem;"></i>
+                        {% endif %}
+                        <input type="file" name="photo" class="form-control mt-2" style="max-width: 220px;">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Introduction</label>
+                        <textarea name="introduction" class="form-control" rows="4">{{ user.introduction or '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-secondary w-100">Mettre à jour</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

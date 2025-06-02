@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Créer un Cours{% endblock %}
+{% block content %}
+<h2>Créer un nouveau cours</h2>
+<form method="POST">
+    <label>Nom du cours :</label>
+    <input type="text" name="course_name" required>
+    <button type="submit">Créer</button>
+</form>
+{% endblock %}
