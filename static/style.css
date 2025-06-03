@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background: #f7f7f7;
+    background: #d3d3d3;
     margin: 0;
     padding: 0;
 }
@@ -26,12 +26,14 @@ nav a {
 
 nav a:hover {
     text-decoration: underline;
+    color: #0056b3;
 }
 
 h1,
 h2,
 h3 {
     color: #333;
+    margin-top: 2rem;
 }
 
 input,
@@ -40,6 +42,9 @@ button {
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
 }
 
 button {
@@ -47,6 +52,9 @@ button {
     color: #fff;
     border: none;
     border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 button:hover {
@@ -55,31 +63,28 @@ button:hover {
 
 .error {
     color: red;
+    font-weight: bold;
 }
 
 .success {
     color: green;
-}
-
-body {
-    background: #f8f9fa;
-}
-
-h2,
-h3 {
-    margin-top: 2rem;
+    font-weight: bold;
 }
 
 .table th,
 .table td {
     vertical-align: middle;
+    padding: 8px;
 }
 
 input[type="file"] {
     padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 form {
     max-width: 500px;
     margin: 0 auto;
+    background: transparent;
 }
