@@ -88,3 +88,28 @@ form {
     margin: 0 auto;
     background: transparent;
 }
+
+.hero-section {
+    background: linear-gradient(135deg, #f0f4ff, #ffffff);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+}
+
+.hero-section h1 {
+    color: #0d6efd;
+}
+
+.hero-section p {
+    font-size: 1.1rem;
+    color: #444;
+}
+
+.btn-outline-primary {
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    color: white;
+}

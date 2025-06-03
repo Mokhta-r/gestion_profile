@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Accueil{% endblock %}
 {% block content %}
-<h1>Bienvenue sur le système de gestion de cours en ligne</h1>
-<p>Connectez-vous pour accéder à votre espace.</p>
+
+<div class="hero-section text-center py-5 px-3">
+    <h1 class="display-5 fw-bold text-primary mb-3">Bienvenue sur notre plateforme</h1>
+    <p class="lead">Gérez vos cours en ligne efficacement. 
+    Administrateurs, professeurs et étudiants disposent chacun d’un espace dédié pour suivre, créer ou consulter les informations pédagogiques.</p>
+    <hr class="my-4">
+    <p>Veuillez vous connecter pour accéder à toutes les fonctionnalités.</p>
+    <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-primary mt-3">Connexion</a>
+</div>
 {% endblock %}
