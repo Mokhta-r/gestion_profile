@@ -91,7 +91,7 @@ def manage_users():
             flash('Utilisateur créé avec succès.', 'success')
         except Exception:
             flash('Erreur lors de la création de l\'utilisateur.', 'error')
-    cur.execute("SELECT id, username, role FROM user")
+    cur.execute("SELECT id, username, email, role FROM user")
     users = cur.fetchall()
     cur.close()
     return render_template('manage_users.html', users=users)
@@ -129,29 +129,12 @@ def course_detail(course_id):
     if current_user.role != 'professor':
         return redirect(url_for('index'))
     cur = mysql.connection.cursor()
+    # Récupérer le cours
     cur.execute("SELECT * FROM course WHERE id=%s AND professor_id=%s", (course_id, current_user.id))
     course = cur.fetchone()
     if not course:
         cur.close()
-        return redirect(url_for('professor_dashboard'))
-
-    # Liste des étudiants déjà inscrits
-    cur.execute("""
-        SELECT u.id, u.username, g.grade, e.id as enrollment_id FROM enrollment e
-        JOIN user u ON u.id = e.student_id
-        LEFT JOIN grade g ON g.enrollment_id = e.id
-        WHERE e.course_id=%s
-    """, (course_id,))
-    students = cur.fetchall()
-
-    # Liste des étudiants non inscrits pour le dropdown
-    cur.execute("""
-        SELECT id, username FROM user 
-        WHERE role='student' AND id NOT IN (
-            SELECT student_id FROM enrollment WHERE course_id=%s
-        )
-    """, (course_id,))
-    all_students = cur.fetchall()
+        return "Cours introuvable", 404
 
     # Traitement formulaire d'ajout OU modification de note
     if request.method == 'POST':
@@ -193,8 +176,84 @@ def course_detail(course_id):
             flash('Note modifiée.', 'success')
             return redirect(url_for('course_detail', course_id=course_id))
 
+    # Liste des étudiants déjà inscrits
+    cur.execute("""
+        SELECT u.id, u.username, g.grade, e.id as enrollment_id FROM enrollment e
+        JOIN user u ON u.id = e.student_id
+        LEFT JOIN grade g ON g.enrollment_id = e.id
+        WHERE e.course_id=%s
+    """, (course_id,))
+    students = cur.fetchall()
+
+    # Liste des étudiants non inscrits pour le dropdown
+    cur.execute("""
+        SELECT id, username FROM user 
+        WHERE role='student' AND id NOT IN (
+            SELECT student_id FROM enrollment WHERE course_id=%s
+        )
+    """, (course_id,))
+    all_students = cur.fetchall()
     cur.close()
+
+    # Adapter le nom pour le template (username au lieu de name)
+    all_students = [
+        {'id': s['id'], 'name': s['username']}
+        for s in all_students
+    ]
+
     return render_template('course_detail.html', course=course, students=students, all_students=all_students)
+
+@app.route('/admin/users/edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if current_user.role != 'admin':
+        return redirect(url_for('index'))
+    cur = mysql.connection.cursor()
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        role = request.form['role']
+        cur.execute("UPDATE user SET username=%s, email=%s, role=%s WHERE id=%s",
+                    (username, email, role, user_id))
+        mysql.connection.commit()
+        flash('Utilisateur modifié.', 'success')
+        cur.close()
+        return redirect(url_for('manage_users'))
+    cur.execute("SELECT id, username, email, role FROM user WHERE id=%s", (user_id,))
+    user = cur.fetchone()
+    cur.close()
+    return render_template('edit_user.html', user=user)
+
+@app.route('/admin/users/add', methods=['GET', 'POST'])
+@login_required
+def add_user():
+    if current_user.role != 'admin':
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        role = request.form['role']
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO user (username, password, email, role) VALUES (%s, %s, %s, %s)",
+                    (username, password, email, role))
+        mysql.connection.commit()
+        cur.close()
+        flash('Utilisateur ajouté.', 'success')
+        return redirect(url_for('manage_users'))
+    return render_template('add_user.html')
+
+@app.route('/admin/users/delete/<int:user_id>')
+@login_required
+def delete_user(user_id):
+    if current_user.role != 'admin':
+        return redirect(url_for('index'))
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM user WHERE id=%s", (user_id,))
+    mysql.connection.commit()
+    cur.close()
+    flash('Utilisateur supprimé.', 'success')
+    return redirect(url_for('manage_users'))
 
 # ---- Student routes ----
 @app.route('/student')

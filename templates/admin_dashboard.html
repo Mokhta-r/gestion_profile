@@ -1,48 +1,41 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard Administrateur{% endblock %}
+{% block title %}Dashboard Étudiant{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-xl-8 col-lg-10 col-md-12">
+    <div class="col-xl-10 col-lg-11 col-md-12">
         <div class="card shadow-lg mb-4">
-            <div class="card-header bg-primary bg-gradient text-white d-flex align-items-center">
-                <i class="bi bi-shield-lock fs-3 me-2"></i>
-                <h3 class="mb-0">Espace Administrateur</h3>
+            <div class="card-header bg-info bg-gradient text-white d-flex align-items-center">
+                <i class="bi bi-person-bounding-box fs-3 me-2"></i>
+                <h3 class="mb-0">Espace Étudiant</h3>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <span class="fs-5 fw-bold">Bienvenue, {{ current_user.username }} !</span>
+                <span class="fs-5 fw-bold">Bienvenue, {{ current_user.username }} !</span>
+                <div class="table-responsive mt-3">
+                    <table class="table table-striped table-hover align-middle shadow-sm">
+                        <thead class="table-info">
+                            <tr>
+                                <th>Cours</th>
+                                <th>Professeur</th>
+                                <th>Note</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for enrollment in enrollments %}
+                            <tr>
+                                <td>{{ enrollment.course_name }}</td>
+                                <td>{{ enrollment.professor_username }}</td>
+                                <td>{{ enrollment.grade if enrollment.grade is not none else "Non noté" }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">Aucun cours inscrit.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 shadow-sm text-center hover-shadow">
-                            <div class="card-body">
-                                <i class="bi bi-people-fill fs-1 text-primary"></i>
-                                <h5 class="card-title mt-2">Utilisateurs</h5>
-                                <p class="card-text text-muted">Gérer les comptes utilisateurs.</p>
-                                <a href="{{ url_for('manage_users') }}" class="btn btn-outline-primary w-100">Gérer</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 shadow-sm text-center hover-shadow">
-                            <div class="card-body">
-                                <i class="bi bi-journal-text fs-1 text-success"></i>
-                                <h5 class="card-title mt-2">Cours & Notes</h5>
-                                <p class="card-text text-muted">Voir tous les cours et notes.</p>
-                                <a href="{{ url_for('admin_courses') }}" class="btn btn-outline-success w-100">Voir</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 shadow-sm text-center hover-shadow">
-                            <div class="card-body">
-                                <i class="bi bi-person-circle fs-1 text-secondary"></i>
-                                <h5 class="card-title mt-2">Profil</h5>
-                                <p class="card-text text-muted">Modifier votre profil.</p>
-                                <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary w-100">Profil</a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="text-end">
+                    <a href="{{ url_for('profile') }}" class="btn btn-link text-secondary"><i class="bi bi-person-circle"></i> Mon profil</a>
                 </div>
             </div>
         </div>
